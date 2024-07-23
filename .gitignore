@@ -1,3 +1,4 @@
+.DS_Store
 /.idea
 /gfpgan/weights/detection_Resnet50_Final.pth
 /gfpgan/weights/parsing_parsenet.pth
