@@ -1,9 +1,10 @@
 import gradio as gr
-from utils.gfpgan_wrapper import videoEnhance
+from utils.gfpgan_wrapper import VideoEnhancer
 
+video_enhancer = VideoEnhancer()
 def enhance_video(video):
     print(f"Enhancing video: {video}")
-    output_path = videoEnhance(video)
+    output_path = video_enhancer.video_enhance(video)
     print(f"Output path: {output_path}")
     return output_path
 
