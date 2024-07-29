@@ -1,10 +1,12 @@
 import gradio as gr
 from utils.gfpgan_wrapper import VideoEnhancer
+import asyncio
 
 video_enhancer = VideoEnhancer()
-def enhance_video(video):
+
+async def enhance_video(video, batch_size):
     print(f"Enhancing video: {video}")
-    output_path = video_enhancer.video_enhance(video)
+    output_path = await video_enhancer.video_enhance(video, batch_size)
     print(f"Output path: {output_path}")
     return output_path
 
@@ -17,7 +19,10 @@ with gr.Blocks(title="视频高清化", css=css, theme=gr.themes.Soft(primary_hu
         video_input = gr.Video(label="上传视频")
         video_output = gr.Video(label="高清化后的视频")
     
-    btn = gr.Button("一键高清")
-    btn.click(enhance_video, inputs=video_input, outputs=video_output)
+    with gr.Row():
+        batch_size = gr.Slider(label="批量大小", minimum=1, maximum=256, value=128, step=1)
+        btn = gr.Button("一键高清")
+
+    btn.click(fn=enhance_video, inputs=[video_input, batch_size], outputs=video_output)
 
 demo.launch(server_name="0.0.0.0")
