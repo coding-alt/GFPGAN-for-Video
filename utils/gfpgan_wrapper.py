@@ -2,12 +2,11 @@ import os
 import cv2
 import uuid
 import re
-import numpy as np
 import asyncio
 from gfpgan import GFPGANer
 from moviepy.editor import VideoFileClip, AudioFileClip, ImageSequenceClip
 
-class VideoEnhancer:
+class GfpganWrapper:
     def __init__(self):
         # 加载模型
         CURRENT_SCRIPT_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -99,10 +98,37 @@ class VideoEnhancer:
 
         return final_output_path
 
+    def enhance_image(self, image):
+        print(f"Enhancing image: {image}")
+
+        if not os.path.isfile(image):
+            raise ValueError(f"Invalid image path: {image}")
+
+        # 读取输入图片
+        image_array = cv2.imread(image)
+
+        # 对图片进行高清化处理
+        enhanced_image = self.enhance(image_array)
+
+        # 生成临时文件路径
+        temp_dir = os.path.dirname(image)
+        temp_file_name = str(uuid.uuid4()) + '.jpg'
+        output_temp_path = os.path.join(temp_dir, temp_file_name)
+
+        # 保存处理后的图片
+        cv2.imwrite(output_temp_path, enhanced_image)
+
+        print(f"Output path: {output_temp_path}")
+        return output_temp_path
+
 if __name__ == "__main__":
     video_path = "input_video_path.mp4"
     batch_size = 1
 
-    video_enhancer = VideoEnhancer()
+    video_enhancer = GfpganWrapper()
     enhanced_video_path = asyncio.run(video_enhancer.video_enhance(video_path, batch_size))
     print(f"Enhanced video saved to: {enhanced_video_path}")
+
+    image_path = "input_image_path.jpg"
+    enhanced_image_path = asyncio.run(video_enhancer.enhance_image(image_path))
+    print(f"Enhanced image saved to: {enhanced_image_path}")
