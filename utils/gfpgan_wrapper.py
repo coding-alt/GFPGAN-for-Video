@@ -98,7 +98,7 @@ class GfpganWrapper:
 
         return final_output_path
 
-    def enhance_image(self, image):
+    def image_enhance(self, image):
         print(f"Enhancing image: {image}")
 
         if not os.path.isfile(image):
